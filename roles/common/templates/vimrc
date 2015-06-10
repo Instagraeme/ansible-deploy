@@ -1,0 +1,63 @@
+" Vim RC Graeme Smith
+runtime bundle/vim-pathogen/autoload/pathogen.vim
+call pathogen#infect()
+
+" Colors {
+  syntax enable                                  " enable syntax processing
+  set background=dark
+  colorscheme solarized
+  let g:solarized_termcolors = 256
+" }
+
+" Misc {
+  set ttyfast                                    " faster redraw
+  set lazyredraw                                 " redraw only when we need to
+  set backspace=indent,eol,start
+  set nocompatible                               " remove compatibility with old vim
+" }
+
+" Spaces & Tabs {
+  set autoindent                                 " Use auto indentation
+  set tabstop=2                                  " 2 space tab
+  set expandtab                                  " tabs are spaces
+  set shiftwidth=2                               " columns per <<
+  set softtabstop=2                              " Spaces per tab
+  filetype indent on                             " load filetype-specific indent files
+  filetype plugin on
+" }
+
+" UI Configuration {
+  set number                                     " show line numbers
+  set cursorline                                 " highlight current line
+  set showcmd                                    " show command in bottom bar
+  set wildmenu                                   " visual autocomplete for command menu
+  set showmatch                                  " highlight matching [{()}]
+  set mouse=a                                    " enable mouse support
+  set vb                                         " enable visual bell, disable audio bell
+  set scrolloff=2                                " minimum lines above or below the cursor
+  set laststatus=2                               " always show the status bar
+  set clipboard=unnamed                          " use the system clipboard
+  set formatoptions=cqt                          " automatically wrap text as whitespace allows
+  set textwidth=80                               " text wrap at 80 characters
+"" }
+
+" Search Options {
+  set incsearch                                  " search as characters are entered
+  set hlsearch                                   " highlight matches
+  set ignorecase                                 " ignore case when searching
+" }
+
+
+" Disable Arrow Keys {
+  nnoremap <left> :vertical resize +5<cr> 
+  nnoremap <right> :vertical resize -5<cr>
+  nnoremap <up> :resize +5<cr>
+  nnoremap <down> :resize -5<cr>
+" }
+
+" highlight the status bar when in insert mode {
+  if version >= 700
+    au InsertEnter * hi StatusLine ctermfg=235 ctermbg=2
+    au InsertLeave * hi StatusLine ctermbg=240 ctermfg=12
+  endif
+" }

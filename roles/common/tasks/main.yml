@@ -1,0 +1,60 @@
+---
+- name: Install necessary packages
+  run_once: true
+  apt: name={{ item }} state=latest
+  sudo: yes
+  with_items: 
+    - git 
+    - git-core
+    - vim 
+    - zsh
+    - curl
+    - tmux
+
+- name: Remove old files
+  file: path=~/{{ item }} state=absent
+  with_items:
+  - .vim
+  - .vimrc
+  - .zshrc
+  - .tmux.conf
+  - .dotfiles-backup
+
+- name: Backup Files
+  command: "mv ~/.dotfiles ~/.dotfiles-backup" 
+
+- name: Install oh-my-zsh
+  git: repo=https://github.com/robbyrussell/oh-my-zsh.git dest=~/.dotfiles/oh-my-zsh
+
+- name: Install Files
+  template: src={{ item }} dest=~/.dotfiles/{{ item }} mode=0644 owner={{ ansible_ssh_user }}
+  with_items:
+  - zshrc
+  - vimrc
+  - tmux.conf
+
+- name: Set zsh as default shell
+  user: name={{ ansible_ssh_user }} shell=/bin/zsh
+
+- name: Create Pathogen Directories
+  file: path={{ item }} state=directory mode=0700
+  with_items:
+  - ~/.dotfiles/vim/autoload
+  - ~/.dotfiles/vim/bundle
+
+- name: Install Pathogen
+  shell: curl -LSso ~/.dotfiles/vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+  args:
+    chdir: ~
+    creates: ~/.dotfiles/vim/autoload/pathogen.vim
+
+- name: Install vim-colors-solarized
+  git: repo=https://github.com/altercation/vim-colors-solarized.git dest=~/.dotfiles/vim/bundle/vim-colors-solarized
+
+- name: Create Symlinks
+  file: path=~/.{{ item }} src=~/.dotfiles/{{ item }} state=link owner={{ ansible_ssh_user }}
+  with_items:
+  - vim
+  - vimrc
+  - zshrc
+  - tmux.conf
